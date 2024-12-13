@@ -3,7 +3,6 @@ import './HEREMap.tests'
 // then we can complete the other tests
 import './Circle.tests'
 import './Marker.tests'
-import './utils/cache.tests'
 import './utils/get-dom-marker-icon.tests'
 import './utils/get-marker-icon.tests'
 import './utils/get-script-map.tests'

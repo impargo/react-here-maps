@@ -1,19 +1,15 @@
 import * as chai from 'chai'
 import * as $ from 'jquery'
-import { forEach } from 'lodash'
 import * as Sinon from 'sinon'
 
 import HEREMap from '../src/HEREMap'
-import { loadScripts } from '../src/utils/cache'
-import getScriptMap from '../src/utils/get-script-map'
 import mount from './helpers/mount'
 
 declare let sinon: Sinon.SinonStatic
 
 describe('<HEREMap />', () => {
-  before(function beforeAllHook (done) {
+  before(function beforeAllHook () {
     this.timeout(5000)
-    loadScripts(true, true).then(done)
   })
 
   it('should call componentDidMount when the component is mounted', () => {
@@ -29,15 +25,6 @@ describe('<HEREMap />', () => {
 
     // remove the test map from the DOM
     wrapper.unmount()
-  })
-
-  it('should generate all the necessary script elements within the document', () => {
-    const scriptMap = getScriptMap()
-    // check the length of the script map is equal to the number of script elements on the page
-    // - we can do this as there are no other scripts on the page during testing
-    forEach(scriptMap, (script: string) => {
-      chai.expect($(`script[src="${script}"]`).length).to.equal(1)
-    })
   })
 
   it('should generate all the necessary link elements within the document', () => {

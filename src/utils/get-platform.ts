@@ -1,3 +1,5 @@
+import '../bundle'
+
 let platform: H.service.Platform
 
 // return the current platform if there is one,
