@@ -90,6 +90,13 @@ Renders a polyline on the map by passing an array of coordinates.
 
 > Supports event handling via callbacks `onTap`, `onPointerLeave`, `onPointerMove`, `onPointerEnter`, `onDragStart`, `onDrag`, and `onDragEnd`.
 
+
+Publishing a Pre-release Package Version
+--------------
+
+To generate a pre-release package from the changes in a pull request, add a `/publish` comment in the PR. This will publish a new package version and add a comment in the PR with the details of the published version.
+
+
 Acknowledgment
 --------------
 This project was originally forked from https://github.com/Josh-ES/react-here-maps, however, this project has since deviated significantly from the original project after several rewrites to support newer HERE APIs and React versions.
