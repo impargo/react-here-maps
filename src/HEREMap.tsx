@@ -8,10 +8,8 @@ import type { DefaultLayers } from './types'
 import { useRasterLayers } from './useRasterLayers'
 import { useVectorLayers } from './useVectorLayers'
 import { getPlatform } from './utils/get-platform'
-import { Language } from './utils/languages'
+import { getTileLanguage, getUILanguage } from './utils/languages'
 
-// declare an interface containing the required and potential
-// props that can be passed to the HEREMap component
 export interface HEREMapProps extends H.Map.Options {
   children?: React.ReactNode,
   apiKey: string,
@@ -19,30 +17,32 @@ export interface HEREMapProps extends H.Map.Options {
   animateZoom?: boolean,
   hidpi?: boolean,
   interactive?: boolean,
-  lg?: Language,
   routes?: object[],
   truckRestrictions?: boolean,
   trafficLayer?: boolean,
-  incidentsLayer?: boolean,
   useSatellite?: boolean,
   disableMapSettings?: boolean,
   onMapAvailable?: (state: HEREMapState) => void,
+  /**
+   * Language code that is used both for the tile labels
+   * and for the UI (if disableMapSettings is false).
+   * This can be either a two-letter code (e.g. 'en') or
+   * a full locale code (e.g. 'en-US' or `de-DE`).
+   *
+   * Note that not all languages can be used for the UI.
+   * For the full list of supported languages, see
+   * https://www.here.com/docs/bundle/maps-api-for-javascript-developer-guide/page/topics/map-controls-ui.html#change-the-ui-language
+   *
+   * @default en
+   */
   language?: string,
   /**
    * Also known as environmental zones.
    */
   congestion?: boolean,
-  /**
-   * Note: this cannot be changed after the map is loaded.
-   * If you want to change it, you have to re-mount the map component.
-   */
   useVectorTiles?: boolean,
-
-  useLegacyTruckLayer?: boolean,
-  useLegacyTrafficLayer?: boolean,
 }
 
-// declare an interface containing the potential state flags
 export interface HEREMapState {
   map?: H.Map,
   behavior?: H.mapevents.Behavior,
@@ -70,21 +70,17 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
   hidpi,
   interactive = true,
   zoom,
-  lg,
   useSatellite,
   trafficLayer,
   onMapAvailable,
   disableMapSettings,
-  language,
+  language = 'en',
   congestion,
   truckRestrictions,
-  incidentsLayer,
   apiKey,
   animateZoom,
   animateCenter,
   useVectorTiles,
-  useLegacyTrafficLayer,
-  useLegacyTruckLayer,
 }, ref) => {
   const uniqueIdRef = useRef<string>(uniqueId())
 
@@ -98,7 +94,6 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
   useVectorLayers({
     congestion,
     defaultLayers: defaultLayersRef.current,
-    incidentsLayer,
     map,
     trafficLayer,
     truckRestrictions,
@@ -110,17 +105,12 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
     apiKey,
     congestion,
     defaultLayers: defaultLayersRef.current,
-    incidentsLayer,
-    lg,
-    locale: language,
+    language,
     map,
     trafficLayer,
     truckRestrictions,
-    useLegacyTrafficLayer,
-    useLegacyTruckLayer,
     useSatellite,
     useVectorTiles,
-    hidpi,
   })
 
   const unmountedRef = useRef(false)
@@ -205,16 +195,16 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
       apikey: apiKey,
     })
 
-    const engineType = useVectorTiles ? H.Map.EngineType.HARP : H.Map.EngineType.P2D
+    const engineType = H.Map.EngineType.HARP
 
     defaultLayersRef.current = platform.createDefaultLayers({
-      lg,
+      lg: getTileLanguage(language),
       engineType,
     }) as DefaultLayers
 
     const hereMapEl = document.querySelector(`#map-container-${uniqueIdRef.current}`) as HTMLElement
     const baseLayer = useVectorTiles
-      ? defaultLayersRef.current.vector.normal.map
+      ? defaultLayersRef.current.vector.normal.logistics
       : defaultLayersRef.current.raster.normal.map
     const newMap = new H.Map(
       hereMapEl,
@@ -242,7 +232,7 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
       behavior.disable(H.mapevents.Behavior.Feature.FRACTIONAL_ZOOM)
 
       // create the default UI for the map
-      ui = H.ui.UI.createDefault(newMap, defaultLayersRef.current, language)
+      ui = H.ui.UI.createDefault(newMap, defaultLayersRef.current, getUILanguage(language))
       if (disableMapSettings) {
         ui.removeControl('mapsettings')
       }
@@ -297,5 +287,4 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
   )
 })
 
-// make the HEREMap component the default export
 export default HEREMap
