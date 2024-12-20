@@ -10,8 +10,6 @@ import { useVectorLayers } from './useVectorLayers'
 import getPlatform from './utils/get-platform'
 import { Language } from './utils/languages'
 
-// declare an interface containing the required and potential
-// props that can be passed to the HEREMap component
 export interface HEREMapProps extends H.Map.Options {
   children?: React.ReactNode,
   apiKey: string,
@@ -19,6 +17,9 @@ export interface HEREMapProps extends H.Map.Options {
   animateZoom?: boolean,
   hidpi?: boolean,
   interactive?: boolean,
+  /**
+   * @deprecated use `language` instead.
+   */
   lg?: Language,
   /**
    * @deprecated no longer supported. HERE Maps JS is now bundled with this package.
@@ -27,6 +28,9 @@ export interface HEREMapProps extends H.Map.Options {
   routes?: object[],
   truckRestrictions?: boolean,
   trafficLayer?: boolean,
+  /**
+   * @deprecated incidents are now always shown as part of the trafficLayer.
+   */
   incidentsLayer?: boolean,
   useSatellite?: boolean,
   disableMapSettings?: boolean,
@@ -36,21 +40,22 @@ export interface HEREMapProps extends H.Map.Options {
    * Also known as environmental zones.
    */
   congestion?: boolean,
-  /**
-   * Note: this cannot be changed after the map is loaded.
-   * If you want to change it, you have to re-mount the map component.
-   */
   useVectorTiles?: boolean,
   /**
    * @deprecated no longer supported. HERE Maps JS is now bundled with this package so there can longer be script loading errors.
    */
   onScriptLoadError?: (failedScripts: string[]) => void,
 
+  /**
+   * @deprecated Raster Tiles V2 API is shut down by HERE. This option cannot be used anymore.
+   */
   useLegacyTruckLayer?: boolean,
+  /**
+   * @deprecated Raster Tiles V2 API is shut down by HERE. This option cannot be used anymore.
+   */
   useLegacyTrafficLayer?: boolean,
 }
 
-// declare an interface containing the potential state flags
 export interface HEREMapState {
   map?: H.Map,
   behavior?: H.mapevents.Behavior,
@@ -78,7 +83,6 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
   hidpi,
   interactive = true,
   zoom,
-  lg,
   useSatellite,
   trafficLayer,
   onMapAvailable,
@@ -86,13 +90,10 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
   language,
   congestion,
   truckRestrictions,
-  incidentsLayer,
   apiKey,
   animateZoom,
   animateCenter,
   useVectorTiles,
-  useLegacyTrafficLayer,
-  useLegacyTruckLayer,
 }, ref) => {
   const uniqueIdRef = useRef<string>(uniqueId())
 
@@ -106,7 +107,6 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
   useVectorLayers({
     congestion,
     defaultLayers: defaultLayersRef.current,
-    incidentsLayer,
     map,
     trafficLayer,
     truckRestrictions,
@@ -118,17 +118,12 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
     apiKey,
     congestion,
     defaultLayers: defaultLayersRef.current,
-    incidentsLayer,
-    lg,
     locale: language,
     map,
     trafficLayer,
     truckRestrictions,
-    useLegacyTrafficLayer,
-    useLegacyTruckLayer,
     useSatellite,
     useVectorTiles,
-    hidpi,
   })
 
   const unmountedRef = useRef(false)
@@ -213,16 +208,16 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
       apikey: apiKey,
     })
 
-    const engineType = useVectorTiles ? H.Map.EngineType.HARP : H.Map.EngineType.P2D
+    const engineType = H.Map.EngineType.HARP
 
     defaultLayersRef.current = platform.createDefaultLayers({
-      lg,
+      lg: language,
       engineType,
     }) as DefaultLayers
 
     const hereMapEl = document.querySelector(`#map-container-${uniqueIdRef.current}`) as HTMLElement
     const baseLayer = useVectorTiles
-      ? defaultLayersRef.current.vector.normal.map
+      ? defaultLayersRef.current.vector.normal.logistics
       : defaultLayersRef.current.raster.normal.map
     const newMap = new H.Map(
       hereMapEl,
@@ -305,5 +300,4 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
   )
 })
 
-// make the HEREMap component the default export
 export default HEREMap
