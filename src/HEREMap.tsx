@@ -7,7 +7,7 @@ import { HEREMapContext } from './context'
 import type { DefaultLayers } from './types'
 import { useRasterLayers } from './useRasterLayers'
 import { useVectorLayers } from './useVectorLayers'
-import getPlatform from './utils/get-platform'
+import { getPlatform } from './utils/get-platform'
 import { Language } from './utils/languages'
 
 // declare an interface containing the required and potential
@@ -251,7 +251,7 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
     setMap(newMap)
     setRoutesGroup(routesProvider.getRootGroup())
 
-    onMapAvailable({
+    onMapAvailable?.({
       behavior,
       map: newMap,
       markersGroups: markersGroupsRef.current,

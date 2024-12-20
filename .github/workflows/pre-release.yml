@@ -16,7 +16,7 @@ jobs:
         ref: ${{ github.event.client_payload.pull_request.head.ref }}
     - uses: actions/setup-node@v4
       with:
-        node-version: 16
+        node-version: 20
         registry-url: https://npm.pkg.github.com/
     - name: Install
       run: yarn install --frozen-lockfile

@@ -12,10 +12,10 @@ jobs:
           with:
             node-version: 20
         - name: Cache
-          uses: actions/cache@v1.0.3
+          uses: actions/cache@v3
           with:
             path: node_modules
-            key: ${{ runner.os }}-node-client-${{ hashFiles('package-lock.json') }}
+            key: ${{ runner.os }}-node-client-${{ hashFiles('yarn.lock') }}
         - name: Install
           run: yarn install --frozen-lockfile
 
@@ -28,10 +28,10 @@ jobs:
           with:
             node-version: 20
         - name: Restore cache
-          uses: actions/cache@v1.0.3
+          uses: actions/cache@v3
           with:
             path: node_modules
-            key: ${{ runner.os }}-node-client-${{ hashFiles('package-lock.json') }}
+            key: ${{ runner.os }}-node-client-${{ hashFiles('yarn.lock') }}
         - name: Lint
           run: yarn lint
 
@@ -44,26 +44,25 @@ jobs:
           with:
             node-version: 20
         - name: Restore cache
-          uses: actions/cache@v1.0.3
+          uses: actions/cache@v3
           with:
             path: node_modules
-            key: ${{ runner.os }}-node-client-${{ hashFiles('package-lock.json') }}
+            key: ${{ runner.os }}-node-client-${{ hashFiles('yarn.lock') }}
         - name: Build
-          run: yarn prepublishOnly
-    # test:
-    #   needs: install
-    #   runs-on: ubuntu-latest
-    #   steps:
-    #     - uses: actions/checkout@v2
-    #     - uses: actions/setup-node@v4
-    #       with:
-    #         node-version: 20
-    #     - name: Restore cache
-    #       uses: actions/cache@v1.0.3
-    #       with:
-    #         path: node_modules
-    #         key: ${{ runner.os }}-node-client-${{ hashFiles('package-lock.json') }}
-    #     - name: Lint
-    #       run: npm run test
+          run: yarn build
 
-
+    test:
+      needs: install
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-node@v4
+          with:
+            node-version: 20
+        - name: Restore cache
+          uses: actions/cache@v3
+          with:
+            path: node_modules
+            key: ${{ runner.os }}-node-client-${{ hashFiles('yarn.lock') }}
+        - name: Test
+          run: yarn test
