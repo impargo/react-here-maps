@@ -1,152 +1,74 @@
 import { useEffect, useMemo } from 'react'
 
 import type { DefaultLayers } from './types'
-import { Language } from './utils/languages'
+import { getPlatform } from './utils/get-platform'
+import { getTileLanguage } from './utils/languages'
 
 export interface UseRasterLayersProps {
   map?: H.Map,
   truckRestrictions?: boolean,
   trafficLayer?: boolean,
-  incidentsLayer?: boolean,
   useSatellite?: boolean,
   congestion?: boolean,
   defaultLayers?: DefaultLayers,
   apiKey: string,
-  hidpi?: boolean,
   useVectorTiles: boolean,
-  locale?: string,
-  /**
-   * @deprecated
-   */
-  lg?: Language,
-  useLegacyTruckLayer?: boolean,
-  useLegacyTrafficLayer?: boolean,
+  language: string,
 }
 
-const getLayers = (
-  apiKey: string,
-  locale?: string,
-  lg?: string,
-  hidpi?: boolean,
-  useLegacyTruckLayer?: boolean,
-  useLegacyTrafficLayer?: boolean,
-) => {
-  const lang = locale ?? 'en'
-  const ppi = hidpi ? '&ppi=400' : ''
-  const format = 'png8'
+const getBaseLayer = ({
+  apiKey,
+  language,
+  congestion,
+  trafficLayer,
+}: Pick<UseRasterLayersProps, 'apiKey' | 'language' | 'congestion' | 'trafficLayer'>) => {
+  const lang = getTileLanguage(language)
 
-  const getTruckLayerProvider = (enableCongestion: boolean): H.map.provider.ImageTileProvider.Options => {
-    return {
-      max: 20,
-      min: 8,
-      getURL (col, row, level) {
-        const features = enableCongestion
-          ? 'vehicle_restrictions:active_and_inactive,environmental_zones:all,congestion_zones:all'
-          : 'vehicle_restrictions:active_and_inactive'
-        const style = 'logistics.day'
-        return `https://maps.hereapi.com/v3/blank/mc/${level}/${col}/${row}/${format}?apiKey=${apiKey}&features=${features}&lang=${lang}&style=${style}${ppi}`
-      },
-    }
-  }
-  const getTrafficOverlayProvider = (): H.map.provider.ImageTileProvider.Options => {
-    return {
-      getURL (col, row, level) {
-        return `https://traffic.maps.hereapi.com/v3/flow/mc/${level}/${col}/${row}/${format}?apiKey=${apiKey}${ppi}`
-      },
-    }
-  }
-  const getTrafficBaseProvider = (): H.map.provider.ImageTileProvider.Options => {
-    return {
-      getURL (col, row, level) {
-        const style = 'lite.day'
-        return `https://maps.hereapi.com/v3/base/mc/${level}/${col}/${row}/${format}?apiKey=${apiKey}&lang=${lang}&style=${style}${ppi}`
-      },
-    }
-  }
+  const platform = getPlatform({
+    apikey: apiKey,
+  })
 
-  const getTruckLayerProviderLegacy = (enableCongestion: boolean): H.map.provider.ImageTileProvider.Options => {
-    return {
-      max: 20,
-      min: 8,
-      getURL (col, row, level) {
-        return ['https://',
-          '1.base.maps.ls.hereapi.com/maptile/2.1/truckonlytile/newest/normal.day/',
-          level,
-          '/',
-          col,
-          '/',
-          row,
-          '/256/png8',
-          '?style=fleet',
-          '&apiKey=',
-          apiKey,
-          enableCongestion ? '&congestion' : '',
-          '&lg=',
-          lg,
-          '&ppi=',
-          hidpi ? '320' : '72',
-        ].join('')
-      },
-    }
-  }
-  const getTrafficOverlayProviderLegacy = (): H.map.provider.ImageTileProvider.Options => {
-    return {
-      getURL (col, row, level) {
-        return ['https://',
-          '1.traffic.maps.ls.hereapi.com/maptile/2.1/flowtile/newest/normal.day/',
-          level,
-          '/',
-          col,
-          '/',
-          row,
-          '/256/png8',
-          '?apiKey=',
-          apiKey,
-          '&ppi=',
-          hidpi ? '320' : '72',
-        ].join('')
-      },
-    }
-  }
-  const getTrafficBaseProviderLegacy = (): H.map.provider.ImageTileProvider.Options => {
-    return {
-      getURL (col, row, level) {
-        return ['https://',
-          '1.traffic.maps.ls.hereapi.com/maptile/2.1/traffictile/newest/normal.day/',
-          level,
-          '/',
-          col,
-          '/',
-          row,
-          '/256/png8',
-          '?apiKey=',
-          apiKey,
-          '&ppi=',
-          hidpi ? '320' : '72',
-        ].join('')
-      },
-    }
-  }
+  const service = platform.getRasterTileService({
+    queryParams: {
+      lang,
+      style: trafficLayer ? 'lite.day' : 'logistics.day',
+      ...(congestion
+        ? {
+          features: 'environmental_zones:all,congestion_zones:all',
+        }
+        : {}),
+    },
+  })
 
-  const truckOverlayProvider = new H.map.provider.ImageTileProvider(useLegacyTruckLayer
-    ? getTruckLayerProviderLegacy(false)
-    : getTruckLayerProvider(false))
-  const truckOverlayCongestionProvider = new H.map.provider.ImageTileProvider(useLegacyTruckLayer
-    ? getTruckLayerProviderLegacy(true)
-    : getTruckLayerProvider(true))
-  const trafficOverlayProvider = new H.map.provider.ImageTileProvider(useLegacyTrafficLayer
-    ? getTrafficOverlayProviderLegacy()
-    : getTrafficOverlayProvider())
-  const trafficBaseProvider = new H.map.provider.ImageTileProvider(useLegacyTrafficLayer
-    ? getTrafficBaseProviderLegacy()
-    : getTrafficBaseProvider())
+  const provider =
+    new H.service.rasterTile.Provider(service, { engineType: H.Map.EngineType.HARP })
 
-  return {
-    trafficBaseLayer: new H.map.layer.TileLayer(trafficBaseProvider),
-    trafficOverlayLayer: new H.map.layer.TileLayer(trafficOverlayProvider),
-    truckCongestionLayer: new H.map.layer.TileLayer(truckOverlayCongestionProvider),
-    truckOverlayLayer: new H.map.layer.TileLayer(truckOverlayProvider),
-  }
+  return new H.map.layer.TileLayer(provider)
+}
+
+const getTruckOverlayLayer = ({
+  apiKey,
+  language,
+}: Pick<UseRasterLayersProps, 'apiKey' | 'language'>) => {
+  const lang = getTileLanguage(language)
+
+  const platform = getPlatform({
+    apikey: apiKey,
+  })
+
+  const truckOnlyTileService = platform.getRasterTileService({
+    resource: 'blank',
+    queryParams: {
+      features: 'vehicle_restrictions:active_and_inactive',
+      style: 'logistics.day',
+      lang,
+    },
+  })
+
+  const truckOverlayProvider =
+    new H.service.rasterTile.Provider(truckOnlyTileService, { engineType: H.Map.EngineType.HARP })
+
+  return new H.map.layer.TileLayer(truckOverlayProvider)
 }
 
 export const useRasterLayers = ({
@@ -155,73 +77,53 @@ export const useRasterLayers = ({
   trafficLayer,
   congestion,
   truckRestrictions,
-  incidentsLayer,
   defaultLayers,
   apiKey,
-  locale,
-  hidpi,
+  language,
   useVectorTiles,
-  lg,
-  useLegacyTrafficLayer,
-  useLegacyTruckLayer,
 }: UseRasterLayersProps) => {
-  const layers = useMemo(() => map && getLayers(
+  const truckOverlayLayer = useMemo(() => map && getTruckOverlayLayer({
     apiKey,
-    locale,
-    lg,
-    hidpi,
-    useLegacyTruckLayer,
-    useLegacyTrafficLayer),
-  [apiKey, locale, lg, hidpi, map, useLegacyTruckLayer, useLegacyTrafficLayer])
+    language,
+  }), [apiKey, language, map])
+
+  const baseLayer = useMemo(() => map && getBaseLayer({
+    apiKey,
+    language,
+    congestion,
+    trafficLayer,
+  }), [apiKey, language, congestion, trafficLayer, map])
 
   useEffect(() => {
-    if (map && layers && !useVectorTiles && defaultLayers) {
-      const satelliteBaseLayer = defaultLayers?.raster.satellite.map
-      const emptyBaseLayer = defaultLayers?.raster.normal.map
-      const baseLayer = useSatellite
-        ? satelliteBaseLayer
-        : trafficLayer
-          ? layers.trafficBaseLayer
-          : emptyBaseLayer
-
-      map.setBaseLayer(baseLayer)
+    if (!map || !defaultLayers || !baseLayer || useVectorTiles) {
+      return
     }
-  }, [map, useSatellite, defaultLayers, trafficLayer, useVectorTiles, layers])
+
+    const satelliteBaseLayer = defaultLayers?.raster.satellite.map
+    map.setBaseLayer(useSatellite ? satelliteBaseLayer : baseLayer)
+  }, [map, useSatellite, defaultLayers, baseLayer, useVectorTiles])
 
   useEffect(() => {
-    if (map && layers && !useVectorTiles) {
-      if (truckRestrictions) {
-        if (congestion) {
-          map.removeLayer(layers.truckOverlayLayer)
-          map.addLayer(layers.truckCongestionLayer)
-        } else {
-          map.removeLayer(layers.truckCongestionLayer)
-          map.addLayer(layers.truckOverlayLayer)
-        }
-      } else {
-        map.removeLayer(layers.truckCongestionLayer)
-        map.removeLayer(layers.truckOverlayLayer)
-      }
+    if (!map || !truckOverlayLayer) {
+      return
     }
-  }, [truckRestrictions, congestion, map, useVectorTiles, layers])
+
+    if (truckRestrictions && !useVectorTiles) {
+      map.addLayer(truckOverlayLayer)
+    } else {
+      map.removeLayer(truckOverlayLayer)
+    }
+  }, [truckRestrictions, map, useVectorTiles, truckOverlayLayer])
 
   useEffect(() => {
-    if (map && !useVectorTiles && defaultLayers) {
-      if (incidentsLayer) {
-        map.addLayer(defaultLayers.raster.normal.trafficincidents!)
-      } else {
-        map.removeLayer(defaultLayers.raster.normal.trafficincidents!)
-      }
+    if (!map || !defaultLayers) {
+      return
     }
-  }, [incidentsLayer, map, defaultLayers, useVectorTiles])
 
-  useEffect(() => {
-    if (map && layers && !useVectorTiles) {
-      if (trafficLayer) {
-        map.addLayer(layers.trafficOverlayLayer)
-      } else {
-        map.removeLayer(layers.trafficOverlayLayer)
-      }
+    if (trafficLayer && !useVectorTiles) {
+      map.addLayer(defaultLayers.vector.traffic.logistics)
+    } else {
+      map.removeLayer(defaultLayers.vector.traffic.logistics)
     }
-  }, [trafficLayer, map, useVectorTiles, layers])
+  }, [trafficLayer, map, defaultLayers, useVectorTiles])
 }

@@ -8,7 +8,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   testRegex: 'tests/.*test\\.tsx?$',
   collectCoverage: true,
-  collectCoverageFrom: ['src/**/*.ts'],
+  collectCoverageFrom: ['src/**/*.tsx', 'src/**/*.ts'],
   transformIgnorePatterns: [
     '<rootDir>/node_modules/(?!(@here/maps-api-for-javascript/bin/mapsjs.bundle.harp.js))',
   ],

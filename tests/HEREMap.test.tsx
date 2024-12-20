@@ -22,6 +22,39 @@ jest.mock('../src/utils/get-platform.ts', () => {
   }
 })
 
+const EngineType = H.Map.EngineType
+const Feature = H.mapevents.Behavior.Feature
+
+jest.spyOn(global.H, 'Map').mockImplementation(() => {
+  return {
+    addLayer: jest.fn(),
+    removeLayer: jest.fn(),
+    setBaseLayer: jest.fn(),
+  } as unknown as H.Map
+})
+
+jest.spyOn(global.H.mapevents, 'MapEvents').mockImplementation(() => {
+  return { } as unknown as H.mapevents.MapEvents
+})
+
+jest.spyOn(global.H.mapevents, 'Behavior').mockImplementation(() => {
+  return {
+    disable: jest.fn(),
+  } as unknown as H.mapevents.Behavior
+})
+
+Object.assign(global.H.Map, {
+  EngineType,
+})
+
+Object.assign(global.H.mapevents.Behavior, {
+  Feature,
+})
+
+jest.spyOn(H.ui.UI, 'createDefault').mockImplementation(() => {
+  return {} as H.ui.UI
+})
+
 describe('<HEREMap />', () => {
   it('should create or get platform on mount', () => {
     renderMap()
@@ -31,8 +64,7 @@ describe('<HEREMap />', () => {
   it('should generate a map when the component gets rendered', () => {
     const onMapAvailable = jest.fn()
     renderMap({ onMapAvailable })
-    const canvas = document.querySelector('canvas')
-    expect(canvas).toBeInTheDocument()
+    expect(H.Map).toHaveBeenCalled()
     expect(onMapAvailable).toHaveBeenCalled()
   })
 

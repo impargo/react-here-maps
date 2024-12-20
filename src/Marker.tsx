@@ -6,8 +6,6 @@ import { EventHandlers, useEventHandlers } from './useEventHandlers'
 import getDomMarkerIcon from './utils/get-dom-marker-icon'
 import getMarkerIcon from './utils/get-marker-icon'
 
-// declare an interface containing the required and potential
-// props that can be passed to the HEREMap Marker componengetMartkerIdt
 export interface MarkerProps extends Omit<H.map.Marker.Options, 'data'>, EventHandlers {
   lat: number,
   lng: number,
@@ -18,8 +16,9 @@ export interface MarkerProps extends Omit<H.map.Marker.Options, 'data'>, EventHa
   data?: unknown,
   draggable?: boolean,
   /**
-   * @deprecated use bitmap instead. Passing children in this way has performance
-   * implications since the 3.1 version of the API and should be avoided.
+   * Passing children in this way has performance implications
+   * since the 3.1 version of the API and should be avoided.
+   * If performance is important, use `bitmap` prop instead.
    */
   children?: React.ReactElement<any>,
   group?: string,
@@ -29,7 +28,7 @@ export interface MarkerProps extends Omit<H.map.Marker.Options, 'data'>, EventHa
 /**
  * A "normal" marker that uses a static image as an icon.
  * large numbers of markers of this type can be added to the map
- * very quickly and efficiently
+ * very quickly and efficiently.
  */
 export const Marker: FC<MarkerProps> = ({
   children,

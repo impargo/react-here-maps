@@ -1,50 +1,42 @@
-export enum Language {
-  FRE = 'FRE',
-  GER = 'GER',
-  SPA = 'SPA',
-  ITA = 'ITA',
-  SWA = 'SWA',
-  DAN = 'DAN',
-  NOR = 'NOR',
-  FIN = 'FIN',
-  AM = 'AM',
-  SF = 'SF',
-  GSW = 'GSW',
-  POR = 'POR',
-  TUR = 'TUR',
-  ICE = 'ICE',
-  RUS = 'RUS',
-  HUN = 'HUN',
-  DUT = 'DUT',
-  BL = 'BL',
-  ENG = 'ENG',
-  CZE = 'CZE',
-  SLO = 'SLO',
-  POL = 'POL',
-  SLV = 'SLV',
-  CHT = 'CHT',
-  CHI = 'CHI',
-  JPN = 'JPN',
-  THA = 'THA',
-  AFR = 'AFR',
-  ARA = 'ARA',
-  BUL = 'BUL',
-  CAT = 'CAT',
-  SCR = 'SCR',
-  EST = 'EST',
-  GRE = 'GRE',
-  HEB = 'HEB',
-  HIN = 'HIN',
-  IND = 'IND',
-  LAV = 'LAV',
-  LIT = 'LIT',
-  MAY = 'MAY',
-  MAR = 'MAR',
-  RUM = 'RUM',
-  SRP = 'SRP',
-  SWE = 'SWE',
-  UKR = 'UKR',
-  URD = 'URD',
-  VIE = 'VIE',
-  BAQ = 'BAQ',
+const SUPPORTED_UI_LOCALES = [
+  'en-US' as const,
+  'de-DE' as const,
+  'es-ES' as const,
+  'fi-FI' as const,
+  'fr-FR' as const,
+  'it-IT' as const,
+  'nl-NL' as const,
+  'pl-PL' as const,
+  'pt-BR' as const,
+  'pt-PT' as const,
+  'ru-RU' as const,
+  'tr-TR' as const,
+  'zh-CN' as const,
+]
+
+type SupportedLanguage = typeof SUPPORTED_UI_LOCALES[0]
+
+const SUPPORTED_UI_LOCALES_MAP: Record<string, SupportedLanguage> = {
+  en: 'en-US',
+  de: 'de-DE',
+  es: 'es-ES',
+  fi: 'fi-FI',
+  fr: 'fr-FR',
+  it: 'it-IT',
+  nl: 'nl-NL',
+  pl: 'pl-PL',
+  pt: 'pt-PT',
+  ru: 'ru-RU',
+  tr: 'tr-TR',
+  zh: 'zh-CN',
 }
+
+export const getUILanguage = (language: string) => {
+  if (SUPPORTED_UI_LOCALES.includes(language as SupportedLanguage)) {
+    return language
+  }
+
+  return SUPPORTED_UI_LOCALES_MAP[language] ?? 'en-US'
+}
+
+export const getTileLanguage = (language: string) => language.split('-')[0]
