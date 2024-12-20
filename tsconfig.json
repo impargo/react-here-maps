@@ -1,21 +1,18 @@
 {
-  "files": [
-    "src/main.ts"
-  ],
   "compilerOptions": {
-    "jsx": "react",
-    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "outDir": "./dist/",
     "noImplicitAny": true,
-    "target": "es6",
+    "target": "es5",
     "module": "commonjs",
     "experimentalDecorators": true,
     "sourceMap": false,
     "inlineSourceMap": true,
     "declaration": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "lib": ["es2019", "dom"]
   },
-  "awesomeTypescriptLoaderOptions": {
-    "resolveGlobs": true,
-    "forkChecker": true
-  }
+  "include": [
+    "./src/**/*"
+  ],
 }

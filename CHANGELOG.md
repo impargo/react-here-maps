@@ -1,3 +1,6 @@
+# IMPORTANT
+For new releases, refer to the releases page on GitHub.
+
 # Change Log
 
 Every change, update, bug fix or new feature will be documented in this file as new releases are published. The entire project is written in TypeScript, so references to updates to type definitions, typings dependencies etc. will be included here.

@@ -13,6 +13,3 @@ export function getPlatform (platformOptions: H.service.Platform.Options) {
 
   return platform
 }
-
-// make the getPlatform method the default export
-export default getPlatform
