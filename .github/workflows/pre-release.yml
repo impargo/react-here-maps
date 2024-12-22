@@ -27,7 +27,7 @@ jobs:
         major_version=$(echo $PACKAGE_LTS_VERSION | cut -d'-' -f1)
         echo "::set-output name=LTS_VERSION::$major_version"
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: publish-gpr
       run:  |
@@ -35,7 +35,7 @@ jobs:
         git config --global user.name  "GitHub Action"
         yarn publish --no-git-tag-version --new-version ${{ steps.package-lts-version.outputs.LTS_VERSION }}-pre-${{ github.run_number }}
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Show Published version
       run: |
