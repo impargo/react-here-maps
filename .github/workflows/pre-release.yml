@@ -35,7 +35,7 @@ jobs:
         git config --global user.name  "GitHub Action"
         yarn publish --no-git-tag-version --new-version ${{ steps.package-lts-version.outputs.LTS_VERSION }}-pre-${{ github.run_number }}
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     - name: Show Published version
       run: |
