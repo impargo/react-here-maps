@@ -14,8 +14,6 @@ const defaultMapStyles: object = {
   strokeColor: 'blue',
 }
 
-// declare an interface containing the required and potential
-// props that can be passed to the HEREMap Marker component
 export interface RoutesProps extends EventHandlers {
   points?: Coordinates[],
   data?: object,
@@ -29,7 +27,6 @@ export interface RoutesProps extends EventHandlers {
   draggable?: boolean,
 }
 
-// declare an interface containing the potential context parameters
 export interface RoutesContext {
   map: H.Map,
   routesGroup: H.map.Group,
