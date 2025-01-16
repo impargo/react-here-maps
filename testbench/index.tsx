@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 import { HEREMap } from '../src/HEREMap'
 import { Marker } from '../src/Marker'
-import { Route } from '../src/Route'
+import { Polyline } from '../src/Polyline'
 import points from './points.json'
 
 if (!process.env.HERE_APIKEY) {
@@ -35,23 +35,31 @@ const MapAndControls = () => {
           hidpi={devicePixelRatio > 1}
         >
           {showExampleRouteAndMarkers && <>
-            <Route
+            <Polyline
               points={points}
               style={{
-                strokeColor: 'rgba(0, 128, 255, 0.7)',
-                lineWidth: 6,
-                lineTailCap: 'arrow-tail',
-                lineHeadCap: 'arrow-head',
+                fillColor: 'white',
+                strokeColor: 'rgba(49, 95, 225, 0.8)',
+                lineWidth: 8,
+              }}
+            />
+            <Polyline
+              points={points}
+              style={{
+                strokeColor: 'white',
+                lineWidth: 8,
+                lineDash: [1, 4],
+                lineDashImage: H.map.SpatialStyle.DashImage.ARROW,
               }}
             />
             <Marker
               lat={points[0].lat}
-              lng={points[0].lon}
+              lng={points[0].lng}
               draggable
             />
             <Marker
               lat={points[points.length - 1].lat}
-              lng={points[points.length - 1].lon}
+              lng={points[points.length - 1].lng}
               draggable
             />
           </>}

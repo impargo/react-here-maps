@@ -94,10 +94,21 @@ This component clusters multiple nearby markers. You can supply different icons 
 
 You can also provide callbacks for clicking on the cluster icon or individual markers.
 
-### Route
-Renders a polyline on the map by passing an array of coordinates.
+### Polyline
+Renders a polyline on the map by passing an array of { lat, lng } points.
 
 > Supports event handling via callbacks `onTap`, `onPointerLeave`, `onPointerMove`, `onPointerEnter`, `onDragStart`, `onDrag`, and `onDragEnd`.
+
+#### Direction Arrows
+In the HERE HARP Engine, the route direction arrows need to be rendered separately, by using an additional `Polyline` component than the route itself.
+
+For the arrows to show up, the style prop in the `PolyLine` needs to include a `strokeColor`, `lineWidth`, `lineDash` and a `lineDashImage`.
+
+- `lineDash` is a tuple indicating the painted and non painted segments. The painted segment cannot be zero. Ex: [1, 5].
+
+- `lineDashImage` can be any HTMLImageElement object. You can also used the `H.map.SpatialStyle.DashImage.ARROW` bundled by HERE.
+
+For an example check the testbench.
 
 
 Publishing a Pre-release Package Version

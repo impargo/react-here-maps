@@ -3,38 +3,22 @@ import { FC, useContext, useEffect, useMemo, useState } from 'react'
 import { HEREMapContext, HEREMapContextType } from './context'
 import { EventHandlers, useEventHandlers } from './useEventHandlers'
 
-export interface Coordinates {
-  lat: number,
-  lon: number,
-}
-
-const defaultMapStyles: object = {
+const defaultMapStyles: H.map.SpatialStyle.Options = {
   fillColor: 'blue',
-  lineWidth: 4,
   strokeColor: 'blue',
+  lineWidth: 4,
 }
 
-export interface RoutesProps extends EventHandlers {
-  points?: Coordinates[],
+export interface PolylineProps extends EventHandlers {
+  points?: H.geo.IPoint[],
   data?: object,
   zIndex?: number,
-  style?: object,
-  /**
-   * This is only supported when using the legacy P2D engine (when not using vector tiles).
-   * When using vector tiles and/or the new engine, use lineDash, lineHeadCap, and lineTailCap instead.
-   */
-  arrows?: object,
+  style?: H.map.SpatialStyle.Options,
   draggable?: boolean,
 }
 
-export interface RoutesContext {
-  map: H.Map,
-  routesGroup: H.map.Group,
-}
-
-export const Route: FC<RoutesProps> = ({
+export const Polyline: FC<PolylineProps> = ({
   style = defaultMapStyles,
-  arrows,
   data,
   zIndex,
   points,
@@ -51,12 +35,12 @@ export const Route: FC<RoutesProps> = ({
   const [polyline, setPolyline] = useState<H.map.Polyline>(null)
 
   const line = useMemo(() => {
-    const route = new H.geo.LineString()
+    const shape = new H.geo.LineString()
     points.forEach((point) => {
-      const { lat, lon } = point
-      route.pushPoint(new H.geo.Point(lat, lon))
+      const { lat, lng } = point
+      shape.pushPoint(new H.geo.Point(lat, lng))
     })
-    return route
+    return shape
   }, [points])
 
   useEventHandlers(polyline, {
@@ -81,28 +65,30 @@ export const Route: FC<RoutesProps> = ({
 
   useEffect(() => {
     polyline?.setData(data)
-  }, [polyline, data])
+  }, [data])
 
   useEffect(() => {
     polyline?.setZIndex(zIndex)
-  }, [polyline, zIndex])
+  }, [zIndex])
 
   useEffect(() => {
     polyline?.setStyle(style)
-  }, [polyline, style])
+  }, [style])
 
   useEffect(() => {
-    if (routesGroup) {
-      const routeLine = new H.map.Polyline(line, { style, arrows, zIndex, data })
-      routesGroup.addObject(routeLine)
-      setPolyline(routeLine)
-      return () => {
-        routesGroup.removeObject(routeLine)
-      }
+    if (!routesGroup) {
+      return
+    }
+
+    const routeLine = new H.map.Polyline(line, { style, zIndex, data })
+    routesGroup.addObject(routeLine)
+    setPolyline(routeLine)
+    return () => {
+      routesGroup.removeObject(routeLine)
     }
   }, [routesGroup])
 
   return null
 }
 
-export default Route
+export default Polyline

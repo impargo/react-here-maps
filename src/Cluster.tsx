@@ -5,7 +5,7 @@ import getMarkerIcon from './utils/get-marker-icon'
 
 export interface Datapoint<T> {
   lat: number,
-  lon: number,
+  lng: number,
   /**
    * Any generic data that can be stored in the datapoint.
    */
@@ -83,7 +83,7 @@ function createTheme<T> (
 }
 
 function pointToDatapoint<T> (point: Datapoint<T>): H.clustering.DataPoint {
-  return new H.clustering.DataPoint(point.lat, point.lon, null, point.data)
+  return new H.clustering.DataPoint(point.lat, point.lng, null, point.data)
 }
 
 /**
