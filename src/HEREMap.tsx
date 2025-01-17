@@ -111,6 +111,7 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
     truckRestrictions,
     useSatellite,
     useVectorTiles,
+    hidpi,
   })
 
   const unmountedRef = useRef(false)

@@ -14,6 +14,7 @@ export interface UseRasterLayersProps {
   apiKey: string,
   useVectorTiles: boolean,
   language: string,
+  hidpi?: boolean,
 }
 
 const getBaseLayer = ({
@@ -21,7 +22,8 @@ const getBaseLayer = ({
   language,
   congestion,
   trafficLayer,
-}: Pick<UseRasterLayersProps, 'apiKey' | 'language' | 'congestion' | 'trafficLayer'>) => {
+  hidpi,
+}: Pick<UseRasterLayersProps, 'apiKey' | 'language' | 'congestion' | 'trafficLayer' | 'hidpi'>) => {
   const lang = getTileLanguage(language)
 
   const platform = getPlatform({
@@ -31,6 +33,7 @@ const getBaseLayer = ({
   const service = platform.getRasterTileService({
     queryParams: {
       lang,
+      ppi: hidpi ? 200 : 100,
       style: trafficLayer ? 'lite.day' : 'logistics.day',
       ...(congestion
         ? {
@@ -41,7 +44,7 @@ const getBaseLayer = ({
   })
 
   const provider =
-    new H.service.rasterTile.Provider(service, { engineType: H.Map.EngineType.HARP })
+    new H.service.rasterTile.Provider(service, { engineType: H.Map.EngineType.HARP, tileSize: 256 })
 
   return new H.map.layer.TileLayer(provider)
 }
@@ -49,7 +52,8 @@ const getBaseLayer = ({
 const getTruckOverlayLayer = ({
   apiKey,
   language,
-}: Pick<UseRasterLayersProps, 'apiKey' | 'language'>) => {
+  hidpi,
+}: Pick<UseRasterLayersProps, 'apiKey' | 'language' | 'hidpi'>) => {
   const lang = getTileLanguage(language)
 
   const platform = getPlatform({
@@ -62,11 +66,12 @@ const getTruckOverlayLayer = ({
       features: 'vehicle_restrictions:active_and_inactive',
       style: 'logistics.day',
       lang,
+      ppi: hidpi ? 200 : 100,
     },
   })
 
   const truckOverlayProvider =
-    new H.service.rasterTile.Provider(truckOnlyTileService, { engineType: H.Map.EngineType.HARP })
+    new H.service.rasterTile.Provider(truckOnlyTileService, { engineType: H.Map.EngineType.HARP, tileSize: 256 })
 
   return new H.map.layer.TileLayer(truckOverlayProvider)
 }
