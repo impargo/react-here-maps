@@ -177,3 +177,5 @@ package-lock.json
 .parcel-cache
 
 .env
+junit.xml
+reports
