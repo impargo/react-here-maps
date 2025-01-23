@@ -7,6 +7,7 @@ import { getTileLanguage } from './utils/languages'
 export interface UseRasterLayersProps {
   map?: H.Map,
   truckRestrictions?: boolean,
+  showActiveAndInactiveTruckRestrictions?: boolean,
   trafficLayer?: boolean,
   useSatellite?: boolean,
   congestion?: boolean,
@@ -53,7 +54,8 @@ const getTruckOverlayLayer = ({
   apiKey,
   language,
   hidpi,
-}: Pick<UseRasterLayersProps, 'apiKey' | 'language' | 'hidpi'>) => {
+  showActiveAndInactiveTruckRestrictions,
+}: Pick<UseRasterLayersProps, 'apiKey' | 'language' | 'hidpi' | 'showActiveAndInactiveTruckRestrictions'>) => {
   const lang = getTileLanguage(language)
 
   const platform = getPlatform({
@@ -63,7 +65,7 @@ const getTruckOverlayLayer = ({
   const truckOnlyTileService = platform.getRasterTileService({
     resource: 'blank',
     queryParams: {
-      features: 'vehicle_restrictions:active_and_inactive',
+      features: `vehicle_restrictions:${showActiveAndInactiveTruckRestrictions ? 'active_and_inactive' : 'permanent_only'}`,
       style: 'logistics.day',
       lang,
       ppi: hidpi ? 200 : 100,
@@ -86,11 +88,13 @@ export const useRasterLayers = ({
   apiKey,
   language,
   useVectorTiles,
+  showActiveAndInactiveTruckRestrictions,
 }: UseRasterLayersProps) => {
   const truckOverlayLayer = useMemo(() => map && getTruckOverlayLayer({
     apiKey,
     language,
-  }), [apiKey, language, map])
+    showActiveAndInactiveTruckRestrictions,
+  }), [apiKey, showActiveAndInactiveTruckRestrictions, language, map])
 
   const baseLayer = useMemo(() => map && getBaseLayer({
     apiKey,

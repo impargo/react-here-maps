@@ -15,6 +15,7 @@ const MapAndControls = () => {
   const [useVectorTiles, setUseVectorTiles] = useState(false)
   const [enableSatellite, setEnableSatellite] = useState(false)
   const [enableTruckLayer, setEnableTruckLayer] = useState(true)
+  const [enableActiveAndInactiveTruckRestrictions, setEnableActiveAndInactiveTruckRestrictions] = useState(false)
   const [enableCongestionLayer, setEnableCongestionLayer] = useState(false)
   const [enableTrafficLayer, setEnableTrafficLayer] = useState(false)
   const [showExampleRouteAndMarkers, setShowExampleRouteAndMarkers] = useState(true)
@@ -29,6 +30,7 @@ const MapAndControls = () => {
           useVectorTiles={useVectorTiles}
           useSatellite={enableSatellite}
           truckRestrictions={enableTruckLayer}
+          showActiveAndInactiveTruckRestrictions={enableActiveAndInactiveTruckRestrictions}
           congestion={enableCongestionLayer}
           trafficLayer={enableTrafficLayer}
           onMapAvailable={() => console.log('Map is available')}
@@ -89,6 +91,14 @@ const MapAndControls = () => {
             checked={enableTruckLayer}
           />
           Truck restrictions layer
+        </label>
+        <label>
+          <input
+            type='checkbox'
+            onChange={event => setEnableActiveAndInactiveTruckRestrictions(event.target.checked)}
+            checked={enableActiveAndInactiveTruckRestrictions}
+          />
+          Show active and inactive truck restrictions
         </label>
         <label>
           <input
