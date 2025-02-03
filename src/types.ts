@@ -13,6 +13,11 @@ export interface DefaultLayers {
       map: H.map.layer.BaseTileLayer,
       logistics: H.map.layer.BaseTileLayer,
       traffic: H.map.layer.TileLayer,
+      truck: H.map.layer.BaseTileLayer, // WEBGL only
+      /**
+       * @deprecated
+       */
+      trafficincidents: H.map.layer.TileLayer, // WEBGL only
     },
     traffic: {
       logistics: H.map.layer.TileLayer,

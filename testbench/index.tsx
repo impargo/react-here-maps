@@ -50,8 +50,13 @@ const MapAndControls = () => {
               style={{
                 strokeColor: 'white',
                 lineWidth: 8,
-                lineDash: [1, 4],
-                lineDashImage: H.map.SpatialStyle.DashImage.ARROW,
+                // HARP
+                // lineDashImage: H.map.SpatialStyle.DashImage.ARROW,
+                // lineDash: [1, 4],
+                // WEBGL
+                lineTailCap: 'arrow-tail',
+                lineHeadCap: 'arrow-head',
+                lineDash: [0, 4],
               }}
             />
             <Marker

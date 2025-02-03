@@ -1,8 +1,7 @@
-import './bundle'
-
 import { debounce, uniqueId } from 'lodash'
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
+import { ENGINE_TYPE } from './bundle'
 import { HEREMapContext } from './context'
 import type { DefaultLayers } from './types'
 import { useRasterLayers } from './useRasterLayers'
@@ -199,7 +198,7 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
       apikey: apiKey,
     })
 
-    const engineType = H.Map.EngineType.HARP
+    const engineType = ENGINE_TYPE
 
     defaultLayersRef.current = platform.createDefaultLayers({
       lg: getTileLanguage(language),
