@@ -14,11 +14,17 @@ export interface PolylineProps extends EventHandlers {
   data?: object,
   zIndex?: number,
   style?: H.map.SpatialStyle.Options,
+  /**
+   * Sets the arrows style when the P2D engine is in use.
+   * @deprecated This is no longer supported in the newer map engines.
+   */
+  arrows?: H.map.ArrowStyle.Options,
   draggable?: boolean,
 }
 
 export const Polyline: FC<PolylineProps> = ({
   style = defaultMapStyles,
+  arrows,
   data,
   zIndex,
   points,
@@ -76,11 +82,15 @@ export const Polyline: FC<PolylineProps> = ({
   }, [style])
 
   useEffect(() => {
+    polyline?.setArrows(arrows)
+  }, [arrows])
+
+  useEffect(() => {
     if (!routesGroup) {
       return
     }
 
-    const routeLine = new H.map.Polyline(line, { style, zIndex, data })
+    const routeLine = new H.map.Polyline(line, { style, zIndex, data, arrows })
     routesGroup.addObject(routeLine)
     setPolyline(routeLine)
     return () => {
