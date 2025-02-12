@@ -9,7 +9,7 @@ export interface UseVectorLayersProps {
   useSatellite?: boolean,
   congestion?: boolean,
   defaultLayers?: DefaultLayers,
-  useVectorTiles: boolean,
+  enable: boolean,
 }
 
 const defaultLogisticsLayerFeatures = [
@@ -44,10 +44,10 @@ export const useVectorLayers = ({
   congestion,
   truckRestrictions,
   defaultLayers,
-  useVectorTiles,
+  enable,
 }: UseVectorLayersProps) => {
   useEffect(() => {
-    if (!map || !defaultLayers || !useVectorTiles) {
+    if (!map || !defaultLayers || !enable) {
       return
     }
 
@@ -70,36 +70,35 @@ export const useVectorLayers = ({
       }
       style.addEventListener('change', changeListener)
     })
-  }, [defaultLayers, map, useVectorTiles, useSatellite, truckRestrictions, congestion])
+  }, [defaultLayers, map, enable, useSatellite, truckRestrictions, congestion])
 
   useEffect(() => {
-    if (!map || !defaultLayers) {
-      return
-    }
-
-    if (!useVectorTiles) {
-      map.removeLayer(defaultLayers.hybrid.logistics.vector)
+    if (!map || !defaultLayers || !enable) {
       return
     }
 
     if (useSatellite) {
       map.setBaseLayer(defaultLayers.hybrid.logistics.raster)
       map.addLayer(defaultLayers.hybrid.logistics.vector)
-    } else {
-      map.setBaseLayer(defaultLayers.vector.normal.logistics)
-      map.removeLayer(defaultLayers.hybrid.logistics.vector)
     }
-  }, [defaultLayers, map, useVectorTiles, useSatellite])
+
+    return () => {
+      map.removeLayer(defaultLayers.hybrid.logistics.vector)
+      map.setBaseLayer(defaultLayers.vector.normal.logistics)
+    }
+  }, [defaultLayers, map, enable, useSatellite])
 
   useEffect(() => {
-    if (!map || !defaultLayers) {
+    if (!map || !defaultLayers || !enable) {
       return
     }
 
-    if (trafficLayer && useVectorTiles) {
+    if (trafficLayer) {
       map.addLayer(defaultLayers.vector.traffic.logistics)
-    } else {
+    }
+
+    return () => {
       map.removeLayer(defaultLayers.vector.traffic.logistics)
     }
-  }, [trafficLayer, map, defaultLayers, useVectorTiles])
+  }, [trafficLayer, map, defaultLayers, enable])
 }
