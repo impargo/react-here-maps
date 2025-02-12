@@ -10,7 +10,7 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: ['src/**/*.tsx', 'src/**/*.ts'],
   transformIgnorePatterns: [
-    '<rootDir>/node_modules/(?!(@here/maps-api-for-javascript/bin/mapsjs.bundle.harp.js))',
+    '<rootDir>/node_modules/(?!(@here/maps-api-for-javascript)/)',
   ],
   setupFilesAfterEnv: [
     './tests/jest.setup.ts',
