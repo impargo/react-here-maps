@@ -135,7 +135,7 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
       topLeft.walk(BEARING_TOP_LEFT, distance),
       bottomRight.walk(BEARING_BOTTOM_RIGHT, distance),
     )
-    if (viewBounds) { map.getViewModel().setLookAtData({ bounds: viewBounds }, animate) }
+    if (viewBounds) { map.getViewModel().setLookAtData({ bounds: viewBounds }, animate, true) }
   }
 
   const zoomOnMarkers = (animate: boolean = true, group: string = 'default') => {
