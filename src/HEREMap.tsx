@@ -59,8 +59,8 @@ export interface HEREMapRef {
   setCenter: (point: H.geo.IPoint) => void,
   setZoom: (zoom: number) => void,
   screenToGeo: (x: number, y: number) => H.geo.Point,
-  zoomOnMarkers: (animate?: boolean, group?: string) => void,
-  zoomOnMarkersSet: (markersSet: H.map.DomMarker[], animate?: boolean) => void,
+  zoomOnMarkers: (animate?: number | boolean, group?: string) => void,
+  zoomOnMarkersSet: (markersSet: H.map.DomMarker[], animate?: number | boolean) => void,
   addToMarkerGroup: (marker: H.map.Marker, group: string) => void,
   removeFromMarkerGroup: (marker: H.map.Marker, group: string) => void,
 }
@@ -123,7 +123,7 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
     return map.screenToGeo(x, y)
   }
 
-  const zoomOnMarkersGroup = (markersGroup: H.map.Group, animate: boolean = true) => {
+  const zoomOnMarkersGroup = (markersGroup: H.map.Group, animate: number | boolean = true) => {
     const DISTANCE_FACTOR = 0.1
     const BEARING_TOP_LEFT = 315
     const BEARING_BOTTOM_RIGHT = 135
@@ -138,14 +138,14 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
     if (viewBounds) { map.getViewModel().setLookAtData({ bounds: viewBounds }, animate, true) }
   }
 
-  const zoomOnMarkers = (animate: boolean = true, group: string = 'default') => {
+  const zoomOnMarkers = (animate: number | boolean = true, group: string = 'default') => {
     if (map) {
       if (!markersGroupsRef.current[group]) { return }
       zoomOnMarkersGroup(markersGroupsRef.current[group], animate)
     }
   }
 
-  const zoomOnMarkersSet = (markersSet: H.map.DomMarker[], animate: boolean = true) => {
+  const zoomOnMarkersSet = (markersSet: H.map.DomMarker[], animate: number | boolean = true) => {
     const markersGroupSet = new H.map.Group()
     markersSet.map((m) => markersGroupSet.addObject(m))
     zoomOnMarkersGroup(markersGroupSet, animate)
