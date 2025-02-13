@@ -446,10 +446,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.56.0.tgz#ef20350fec605a7f7035a01764731b2de0f3782b"
   integrity sha512-gMsVel9D7f2HLkBma9VbtzZRehRogVRfbr++f06nL2vnCGCNlzOD+/MUov/F4p8myyAHspEhVobgjpX64q5m6A==
 
-"@here/maps-api-for-javascript@^1.61.1":
-  version "1.61.1"
-  resolved "https://repo.platform.here.com/artifactory/api/npm/maps-api-for-javascript/-/@here/maps-api-for-javascript-1.61.1.tgz#4f592e576e6d73674494b8c0680a0cf02788dd11"
-  integrity sha1-T1kuV25tc2dElLjAaAoM8CeI3RE=
+"@here/maps-api-for-javascript@^1.62.0":
+  version "1.62.0"
+  resolved "https://repo.platform.here.com/artifactory/api/npm/maps-api-for-javascript/-/@here/maps-api-for-javascript-1.62.0.tgz#6b8ef073c5f8786486dfdd7cb3194652d4a0c727"
+  integrity sha1-a47wc8X4eGSG3918sxlGUtSgxyc=
 
 "@humanwhocodes/config-array@^0.11.13":
   version "0.11.14"

@@ -65,7 +65,7 @@
     "whatwg-fetch": "^3.6.20"
   },
   "dependencies": {
-    "@here/maps-api-for-javascript": "^1.61.1",
+    "@here/maps-api-for-javascript": "^1.62.0",
     "lodash": "^4.15.0"
   },
   "peerDependencies": {
