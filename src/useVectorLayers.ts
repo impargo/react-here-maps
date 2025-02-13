@@ -9,7 +9,7 @@ export interface UseVectorLayersProps {
   useSatellite?: boolean,
   congestion?: boolean,
   defaultLayers?: DefaultLayers,
-  useVectorTiles: boolean,
+  enableVectorLayers: boolean,
 }
 
 const defaultLogisticsLayerFeatures = [
@@ -44,10 +44,10 @@ export const useVectorLayers = ({
   congestion,
   truckRestrictions,
   defaultLayers,
-  useVectorTiles,
+  enableVectorLayers,
 }: UseVectorLayersProps) => {
   useEffect(() => {
-    if (!map || !defaultLayers || !useVectorTiles) {
+    if (!map || !defaultLayers || !enableVectorLayers) {
       return
     }
 
@@ -70,36 +70,35 @@ export const useVectorLayers = ({
       }
       style.addEventListener('change', changeListener)
     })
-  }, [defaultLayers, map, useVectorTiles, useSatellite, truckRestrictions, congestion])
+  }, [defaultLayers, map, enableVectorLayers, useSatellite, truckRestrictions, congestion])
 
   useEffect(() => {
-    if (!map || !defaultLayers) {
-      return
-    }
-
-    if (!useVectorTiles) {
-      map.removeLayer(defaultLayers.hybrid.logistics.vector)
+    if (!map || !defaultLayers || !enableVectorLayers) {
       return
     }
 
     if (useSatellite) {
       map.setBaseLayer(defaultLayers.hybrid.logistics.raster)
       map.addLayer(defaultLayers.hybrid.logistics.vector)
-    } else {
-      map.setBaseLayer(defaultLayers.vector.normal.logistics)
-      map.removeLayer(defaultLayers.hybrid.logistics.vector)
     }
-  }, [defaultLayers, map, useVectorTiles, useSatellite])
+
+    return () => {
+      map.removeLayer(defaultLayers.hybrid.logistics.vector)
+      map.setBaseLayer(defaultLayers.vector.normal.logistics)
+    }
+  }, [defaultLayers, map, enableVectorLayers, useSatellite])
 
   useEffect(() => {
-    if (!map || !defaultLayers) {
+    if (!map || !defaultLayers || !enableVectorLayers) {
       return
     }
 
-    if (trafficLayer && useVectorTiles) {
+    if (trafficLayer) {
       map.addLayer(defaultLayers.vector.traffic.logistics)
-    } else {
+    }
+
+    return () => {
       map.removeLayer(defaultLayers.vector.traffic.logistics)
     }
-  }, [trafficLayer, map, defaultLayers, useVectorTiles])
+  }, [trafficLayer, map, defaultLayers, enableVectorLayers])
 }

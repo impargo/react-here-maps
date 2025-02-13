@@ -13,7 +13,7 @@ export interface UseRasterLayersProps {
   congestion?: boolean,
   defaultLayers?: DefaultLayers,
   apiKey: string,
-  useVectorTiles: boolean,
+  enableRasterLayers: boolean,
   language: string,
   hidpi?: boolean,
 }
@@ -87,52 +87,59 @@ export const useRasterLayers = ({
   defaultLayers,
   apiKey,
   language,
-  useVectorTiles,
+  enableRasterLayers,
   showActiveAndInactiveTruckRestrictions,
+  hidpi,
 }: UseRasterLayersProps) => {
   const truckOverlayLayer = useMemo(() => map && getTruckOverlayLayer({
     apiKey,
     language,
     showActiveAndInactiveTruckRestrictions,
-  }), [apiKey, showActiveAndInactiveTruckRestrictions, language, map])
+    hidpi,
+  }), [apiKey, showActiveAndInactiveTruckRestrictions, language, hidpi, map])
 
   const baseLayer = useMemo(() => map && getBaseLayer({
     apiKey,
     language,
     congestion,
     trafficLayer,
-  }), [apiKey, language, congestion, trafficLayer, map])
+    hidpi,
+  }), [apiKey, language, congestion, trafficLayer, hidpi, map])
 
   useEffect(() => {
-    if (!map || !defaultLayers || !baseLayer || useVectorTiles) {
+    if (!map || !defaultLayers || !baseLayer || !enableRasterLayers) {
       return
     }
 
     const satelliteBaseLayer = defaultLayers?.raster.satellite.map
     map.setBaseLayer(useSatellite ? satelliteBaseLayer : baseLayer)
-  }, [map, useSatellite, defaultLayers, baseLayer, useVectorTiles])
+  }, [map, useSatellite, defaultLayers, baseLayer, enableRasterLayers])
 
   useEffect(() => {
-    if (!map || !truckOverlayLayer) {
+    if (!map || !enableRasterLayers || !truckOverlayLayer) {
       return
     }
 
-    if (truckRestrictions && !useVectorTiles) {
+    if (truckRestrictions) {
       map.addLayer(truckOverlayLayer)
-    } else {
+    }
+
+    return () => {
       map.removeLayer(truckOverlayLayer)
     }
-  }, [truckRestrictions, map, useVectorTiles, truckOverlayLayer])
+  }, [truckRestrictions, map, enableRasterLayers, truckOverlayLayer])
 
   useEffect(() => {
-    if (!map || !defaultLayers) {
+    if (!map || !defaultLayers || !enableRasterLayers) {
       return
     }
 
-    if (trafficLayer && !useVectorTiles) {
+    if (trafficLayer) {
       map.addLayer(defaultLayers.vector.traffic.logistics)
-    } else {
+    }
+
+    return () => {
       map.removeLayer(defaultLayers.vector.traffic.logistics)
     }
-  }, [trafficLayer, map, defaultLayers, useVectorTiles])
+  }, [trafficLayer, map, defaultLayers, enableRasterLayers])
 }
