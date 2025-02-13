@@ -118,7 +118,7 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
     trafficLayer,
     truckRestrictions,
     useSatellite,
-    enable: useVectorTiles,
+    enableVectorLayers: useVectorTiles,
   })
 
   useRasterLayers({
@@ -131,7 +131,7 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
     truckRestrictions,
     showActiveAndInactiveTruckRestrictions,
     useSatellite,
-    enable: !useVectorTiles && engineType === H.Map.EngineType.HARP,
+    enableRasterLayers: !useVectorTiles && engineType === H.Map.EngineType.HARP,
     hidpi,
   })
 
@@ -144,7 +144,7 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
     trafficLayer,
     truckRestrictions,
     useSatellite,
-    enable: !useVectorTiles && engineType === H.Map.EngineType.P2D,
+    enableRasterLayers: !useVectorTiles && engineType === H.Map.EngineType.P2D,
     hidpi,
   })
 

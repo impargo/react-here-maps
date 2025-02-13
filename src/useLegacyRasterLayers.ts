@@ -12,7 +12,7 @@ export interface UseRasterLayersProps {
   defaultLayers?: DefaultLayers,
   apiKey: string,
   hidpi?: boolean,
-  enable: boolean,
+  enableRasterLayers: boolean,
   language: string,
   engineType?: H.Map.EngineType,
 }
@@ -90,7 +90,7 @@ export const useLegacyRasterLayers = ({
   apiKey,
   language,
   hidpi,
-  enable,
+  enableRasterLayers,
 }: UseRasterLayersProps) => {
   const layers = useMemo(() => map && getLayers(
     apiKey,
@@ -99,7 +99,7 @@ export const useLegacyRasterLayers = ({
   ), [apiKey, language, hidpi, map])
 
   useEffect(() => {
-    if (map && layers && enable && defaultLayers) {
+    if (map && layers && enableRasterLayers && defaultLayers) {
       const satelliteBaseLayer = defaultLayers?.raster.satellite.map
       const emptyBaseLayer = defaultLayers?.raster.normal.map
       const baseLayer = useSatellite
@@ -110,10 +110,10 @@ export const useLegacyRasterLayers = ({
 
       map.setBaseLayer(baseLayer)
     }
-  }, [map, useSatellite, defaultLayers, trafficLayer, enable, layers])
+  }, [map, useSatellite, defaultLayers, trafficLayer, enableRasterLayers, layers])
 
   useEffect(() => {
-    if (map && layers && enable) {
+    if (map && layers && enableRasterLayers) {
       if (truckRestrictions) {
         if (congestion) {
           map.removeLayer(layers.truckOverlayLayer)
@@ -127,15 +127,15 @@ export const useLegacyRasterLayers = ({
         map.removeLayer(layers.truckOverlayLayer)
       }
     }
-  }, [truckRestrictions, congestion, map, enable, layers])
+  }, [truckRestrictions, congestion, map, enableRasterLayers, layers])
 
   useEffect(() => {
-    if (map && layers && enable) {
+    if (map && layers && enableRasterLayers) {
       if (trafficLayer) {
         map.addLayer(layers.trafficOverlayLayer)
       } else {
         map.removeLayer(layers.trafficOverlayLayer)
       }
     }
-  }, [trafficLayer, map, enable, layers])
+  }, [trafficLayer, map, enableRasterLayers, layers])
 }

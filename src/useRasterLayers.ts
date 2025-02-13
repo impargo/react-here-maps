@@ -13,7 +13,7 @@ export interface UseRasterLayersProps {
   congestion?: boolean,
   defaultLayers?: DefaultLayers,
   apiKey: string,
-  enable: boolean,
+  enableRasterLayers: boolean,
   language: string,
   hidpi?: boolean,
 }
@@ -87,7 +87,7 @@ export const useRasterLayers = ({
   defaultLayers,
   apiKey,
   language,
-  enable,
+  enableRasterLayers,
   showActiveAndInactiveTruckRestrictions,
   hidpi,
 }: UseRasterLayersProps) => {
@@ -107,16 +107,16 @@ export const useRasterLayers = ({
   }), [apiKey, language, congestion, trafficLayer, hidpi, map])
 
   useEffect(() => {
-    if (!map || !defaultLayers || !baseLayer || !enable) {
+    if (!map || !defaultLayers || !baseLayer || !enableRasterLayers) {
       return
     }
 
     const satelliteBaseLayer = defaultLayers?.raster.satellite.map
     map.setBaseLayer(useSatellite ? satelliteBaseLayer : baseLayer)
-  }, [map, useSatellite, defaultLayers, baseLayer, enable])
+  }, [map, useSatellite, defaultLayers, baseLayer, enableRasterLayers])
 
   useEffect(() => {
-    if (!map || !enable || !truckOverlayLayer) {
+    if (!map || !enableRasterLayers || !truckOverlayLayer) {
       return
     }
 
@@ -127,10 +127,10 @@ export const useRasterLayers = ({
     return () => {
       map.removeLayer(truckOverlayLayer)
     }
-  }, [truckRestrictions, map, enable, truckOverlayLayer])
+  }, [truckRestrictions, map, enableRasterLayers, truckOverlayLayer])
 
   useEffect(() => {
-    if (!map || !defaultLayers || !enable) {
+    if (!map || !defaultLayers || !enableRasterLayers) {
       return
     }
 
@@ -141,5 +141,5 @@ export const useRasterLayers = ({
     return () => {
       map.removeLayer(defaultLayers.vector.traffic.logistics)
     }
-  }, [trafficLayer, map, defaultLayers, enable])
+  }, [trafficLayer, map, defaultLayers, enableRasterLayers])
 }

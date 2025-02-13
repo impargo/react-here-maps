@@ -9,7 +9,7 @@ export interface UseVectorLayersProps {
   useSatellite?: boolean,
   congestion?: boolean,
   defaultLayers?: DefaultLayers,
-  enable: boolean,
+  enableVectorLayers: boolean,
 }
 
 const defaultLogisticsLayerFeatures = [
@@ -44,10 +44,10 @@ export const useVectorLayers = ({
   congestion,
   truckRestrictions,
   defaultLayers,
-  enable,
+  enableVectorLayers,
 }: UseVectorLayersProps) => {
   useEffect(() => {
-    if (!map || !defaultLayers || !enable) {
+    if (!map || !defaultLayers || !enableVectorLayers) {
       return
     }
 
@@ -70,10 +70,10 @@ export const useVectorLayers = ({
       }
       style.addEventListener('change', changeListener)
     })
-  }, [defaultLayers, map, enable, useSatellite, truckRestrictions, congestion])
+  }, [defaultLayers, map, enableVectorLayers, useSatellite, truckRestrictions, congestion])
 
   useEffect(() => {
-    if (!map || !defaultLayers || !enable) {
+    if (!map || !defaultLayers || !enableVectorLayers) {
       return
     }
 
@@ -86,10 +86,10 @@ export const useVectorLayers = ({
       map.removeLayer(defaultLayers.hybrid.logistics.vector)
       map.setBaseLayer(defaultLayers.vector.normal.logistics)
     }
-  }, [defaultLayers, map, enable, useSatellite])
+  }, [defaultLayers, map, enableVectorLayers, useSatellite])
 
   useEffect(() => {
-    if (!map || !defaultLayers || !enable) {
+    if (!map || !defaultLayers || !enableVectorLayers) {
       return
     }
 
@@ -100,5 +100,5 @@ export const useVectorLayers = ({
     return () => {
       map.removeLayer(defaultLayers.vector.traffic.logistics)
     }
-  }, [trafficLayer, map, defaultLayers, enable])
+  }, [trafficLayer, map, defaultLayers, enableVectorLayers])
 }
