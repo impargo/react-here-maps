@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 
+import { ENGINE_TYPE } from './bundle'
 import type { DefaultLayers } from './types'
 import { getPlatform } from './utils/get-platform'
 import { getTileLanguage } from './utils/languages'
@@ -45,7 +46,7 @@ const getBaseLayer = ({
   })
 
   const provider =
-    new H.service.rasterTile.Provider(service, { engineType: H.Map.EngineType.HARP, tileSize: 256 })
+    new H.service.rasterTile.Provider(service, { engineType: ENGINE_TYPE, tileSize: 256 })
 
   return new H.map.layer.TileLayer(provider)
 }
@@ -73,7 +74,7 @@ const getTruckOverlayLayer = ({
   })
 
   const truckOverlayProvider =
-    new H.service.rasterTile.Provider(truckOnlyTileService, { engineType: H.Map.EngineType.HARP, tileSize: 256 })
+    new H.service.rasterTile.Provider(truckOnlyTileService, { engineType: ENGINE_TYPE, tileSize: 256 })
 
   return new H.map.layer.TileLayer(truckOverlayProvider)
 }
