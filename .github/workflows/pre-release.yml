@@ -49,7 +49,7 @@ jobs:
       uses: peter-evans/create-or-update-comment@v1
       if: github.event_name == 'repository_dispatch'
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GHP_TOKEN }}
         repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
         issue-number: ${{ github.event.client_payload.github.payload.issue.number }}
         reactions: rocket,hooray
