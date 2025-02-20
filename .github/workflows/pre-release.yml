@@ -36,7 +36,7 @@ jobs:
         git config --global user.name  "GitHub Action"
         yarn publish --no-git-tag-version --new-version ${{ steps.package-lts-version.outputs.LTS_VERSION }}-pre-${{ github.run_number }}
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ secrets.GHP_TOKEN }}
 
     - name: Display Version
       run: |
@@ -49,7 +49,7 @@ jobs:
       uses: peter-evans/create-or-update-comment@v1
       if: github.event_name == 'repository_dispatch'
       with:
-        token: ${{ secrets.NPM_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
         repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
         issue-number: ${{ github.event.client_payload.github.payload.issue.number }}
         reactions: rocket,hooray
