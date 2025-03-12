@@ -23,7 +23,7 @@ export const getLayers = (
   hidpi?: boolean,
 ) => {
   const lang = getTileLanguage(language)
-  const ppi = hidpi ? 400 : 100
+  const ppi = hidpi ? 200 : 100
   const format = 'png8'
 
   const getTrafficOverlayProvider = (): H.map.provider.ImageTileProvider.Options => {

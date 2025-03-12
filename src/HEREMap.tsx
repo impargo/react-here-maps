@@ -230,9 +230,14 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
       apikey: apiKey,
     })
 
+    const ppi = engineType === H.Map.EngineType.P2D
+      ? hidpi ? 320 : 72
+      : undefined
+
     defaultLayersRef.current = platform.createDefaultLayers({
       lg: getTileLanguage(language),
       engineType,
+      ppi,
     }) as DefaultLayers
 
     const hereMapEl = document.querySelector(`#map-container-${uniqueIdRef.current}`) as HTMLElement
