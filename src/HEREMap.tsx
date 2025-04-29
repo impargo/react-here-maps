@@ -29,6 +29,10 @@ export interface HEREMapProps extends H.Map.Options {
    */
   engineType?: H.Map.EngineType,
   showActiveAndInactiveTruckRestrictions?: boolean,
+  /**
+   * @default false
+   */
+  hideTruckRestrictionsWhenZooming?: boolean,
   trafficLayer?: boolean,
   useSatellite?: boolean,
   disableMapSettings?: boolean,
@@ -88,6 +92,7 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
   congestion,
   truckRestrictions,
   showActiveAndInactiveTruckRestrictions,
+  hideTruckRestrictionsWhenZooming,
   apiKey,
   animateZoom,
   animateCenter,
@@ -133,6 +138,7 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
     useSatellite,
     enableRasterLayers: !useVectorTiles && engineType === H.Map.EngineType.HARP,
     hidpi,
+    hideTruckRestrictionsWhenZooming,
   })
 
   useLegacyRasterLayers({
