@@ -256,7 +256,6 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
       {
         center,
         engineType,
-        pixelRatio: hidpi ? 2 : 1,
         zoom,
       },
     )
