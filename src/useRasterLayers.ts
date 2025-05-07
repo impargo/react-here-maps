@@ -16,6 +16,10 @@ export interface UseRasterLayersProps {
   enableRasterLayers: boolean,
   language: string,
   hidpi?: boolean,
+  /**
+   * @default false
+   */
+  hideTruckRestrictionsWhenZooming?: boolean,
 }
 
 const getBaseLayer = ({
@@ -90,6 +94,7 @@ export const useRasterLayers = ({
   enableRasterLayers,
   showActiveAndInactiveTruckRestrictions,
   hidpi,
+  hideTruckRestrictionsWhenZooming,
 }: UseRasterLayersProps) => {
   const truckOverlayLayer = useMemo(() => map && getTruckOverlayLayer({
     apiKey,
@@ -116,18 +121,43 @@ export const useRasterLayers = ({
   }, [map, useSatellite, defaultLayers, baseLayer, enableRasterLayers])
 
   useEffect(() => {
-    if (!map || !enableRasterLayers || !truckOverlayLayer) {
+    if (!map || !enableRasterLayers || !truckOverlayLayer || !truckRestrictions) {
       return
     }
 
-    if (truckRestrictions) {
-      map.addLayer(truckOverlayLayer)
+    const syncEventListener = (e: H.map.ChangeEvent) => {
+      if (e.oldValue.lookAt.zoom !== e.newValue.lookAt.zoom) {
+        map.removeLayer(truckOverlayLayer)
+      }
     }
+
+    const mapViewChangeEndEventListener = () => {
+      const dataModelLayers = map.getLayers().asArray()
+      if (dataModelLayers.indexOf(truckOverlayLayer) === -1) {
+        map.getLayers().add(truckOverlayLayer)
+      }
+    }
+
+    if (hideTruckRestrictionsWhenZooming) {
+      // Listen for changes in the view model, i.e. position, zoom level
+      // Remove the overlay only if the zoom level changes, i.e. during the zoomin/out operation
+      // In fact, we want the overlay to stay visible during panning operations
+      map.getViewModel().addEventListener('sync', syncEventListener)
+
+      // Listen for the mapviewchangeend event.
+      // We want to re-add the overlay at the end of the interaction with the map, either panning or zoomin/out.
+      // Specifically, we re-add the overlay only if the layer is not already present in the layers stack
+      map.addEventListener('mapviewchangeend', mapViewChangeEndEventListener)
+    }
+
+    map.addLayer(truckOverlayLayer)
 
     return () => {
       map.removeLayer(truckOverlayLayer)
+      map.getViewModel().removeEventListener('sync', syncEventListener)
+      map.removeEventListener('mapviewchangeend', mapViewChangeEndEventListener)
     }
-  }, [truckRestrictions, map, enableRasterLayers, truckOverlayLayer])
+  }, [truckRestrictions, map, enableRasterLayers, truckOverlayLayer, hideTruckRestrictionsWhenZooming])
 
   useEffect(() => {
     if (!map || !defaultLayers || !enableRasterLayers) {
