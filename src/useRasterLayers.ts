@@ -39,7 +39,7 @@ const getBaseLayer = ({
     format: 'jpeg',
     queryParams: {
       lang,
-      scale: hidpi ? 2 : 1,
+      ppi: hidpi ? 200 : 100,
       style: trafficLayer ? 'lite.day' : 'logistics.day',
       ...(congestion
         ? {
@@ -50,7 +50,7 @@ const getBaseLayer = ({
   })
 
   const provider =
-    new H.service.rasterTile.Provider(service, { engineType: H.Map.EngineType.HARP, tileSize: hidpi ? 512 : 256 })
+    new H.service.rasterTile.Provider(service, { engineType: H.Map.EngineType.HARP })
 
   return new H.map.layer.TileLayer(provider)
 }
@@ -73,12 +73,12 @@ const getTruckOverlayLayer = ({
       features: `vehicle_restrictions:${showActiveAndInactiveTruckRestrictions ? 'active_and_inactive' : 'permanent_only'}`,
       style: 'logistics.day',
       lang,
-      scale: hidpi ? 2 : 1,
+      ppi: hidpi ? 200 : 100,
     },
   })
 
   const truckOverlayProvider =
-    new H.service.rasterTile.Provider(truckOnlyTileService, { engineType: H.Map.EngineType.HARP, tileSize: hidpi ? 512 : 256 })
+    new H.service.rasterTile.Provider(truckOnlyTileService, { engineType: H.Map.EngineType.HARP })
 
   return new H.map.layer.TileLayer(truckOverlayProvider)
 }
