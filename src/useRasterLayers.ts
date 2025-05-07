@@ -36,6 +36,7 @@ const getBaseLayer = ({
   })
 
   const service = platform.getRasterTileService({
+    format: 'jpeg',
     queryParams: {
       lang,
       scale: hidpi ? 2 : 1,
