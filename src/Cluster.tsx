@@ -62,6 +62,7 @@ function createTheme<T> (
 ): H.clustering.ITheme {
   return {
     getClusterPresentation: (cluster) => {
+      console.log('getClusterPresentation')
       const clusterPoints: T[] = []
       cluster.forEachDataPoint((point) => clusterPoints.push(point.getData()))
       return new H.map.Marker(cluster.getPosition(), {
@@ -72,6 +73,7 @@ function createTheme<T> (
       })
     },
     getNoisePresentation: (point) => {
+      console.log('getNoisePresentation')
       const data: T = point.getData()
       return new H.map.Marker(point.getPosition(), {
         data,
@@ -132,10 +134,12 @@ export default function Cluster<T> ({
   }, [clusteringOptions, onClick])
 
   useEffect(() => {
+    console.log('Setting theme')
     clusteredDataProvider.setTheme(theme)
   }, [theme, clusteredDataProvider])
 
   useEffect(() => {
+    console.log('Setting data points')
     clusteredDataProvider.setDataPoints(datapoints)
   }, [datapoints, clusteredDataProvider])
 
