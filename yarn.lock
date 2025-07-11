@@ -446,10 +446,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.56.0.tgz#ef20350fec605a7f7035a01764731b2de0f3782b"
   integrity sha512-gMsVel9D7f2HLkBma9VbtzZRehRogVRfbr++f06nL2vnCGCNlzOD+/MUov/F4p8myyAHspEhVobgjpX64q5m6A==
 
-"@here/maps-api-for-javascript@^1.64.1":
-  version "1.64.1"
-  resolved "https://repo.platform.here.com/artifactory/api/npm/maps-api-for-javascript/-/@here/maps-api-for-javascript-1.64.1.tgz#052cb73c1e604c4406bc8583b84780e7ec62a634"
-  integrity sha512-AslY4YFRIaCX9V8OxXYoZmbH2qK1LmxmnMyhhmBSfZd7Hk7pTqxMHXGhFjwQBJ5LICFtLxblqkumFCDqAePlvg==
+"@here/maps-api-for-javascript@^1.66.0":
+  version "1.66.0"
+  resolved "https://repo.platform.here.com/artifactory/api/npm/maps-api-for-javascript/-/@here/maps-api-for-javascript-1.66.0.tgz#dc009d6d9ee57e0267240a66891ce4ff2053e75f"
+  integrity sha512-55gpsJkr3C8+2SJvxeHmNsKaBVyA/op9pU+P8MzGz8xUcaf3MmAYDfnI3NgZW8OuljQRwrMg6vUY1epja+8uiQ==
 
 "@humanwhocodes/config-array@^0.11.13":
   version "0.11.14"
