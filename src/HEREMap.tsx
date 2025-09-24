@@ -172,7 +172,7 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
       topLeft.walk(BEARING_TOP_LEFT, distance),
       bottomRight.walk(BEARING_BOTTOM_RIGHT, distance),
     )
-    if (viewBounds) { map.getViewModel().setLookAtData({ bounds: viewBounds }, animate, true) }
+    if (viewBounds) { map.getViewModel().setLookAtData({ bounds: viewBounds }, animate, !useVectorTiles) }
   }
 
   const zoomOnMarkers = (animate: number | boolean = true, group: string = 'default') => {
@@ -272,7 +272,9 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
     const behavior = interactive ? new H.mapevents.Behavior(new H.mapevents.MapEvents(newMap)) : undefined
 
     if (behavior) {
-      behavior.disable(H.mapevents.Behavior.Feature.FRACTIONAL_ZOOM)
+      if (!useVectorTiles) {
+        behavior.disable(H.mapevents.Behavior.Feature.FRACTIONAL_ZOOM)
+      }
 
       // create the default UI for the map
       ui = H.ui.UI.createDefault(newMap, defaultLayersRef.current, getUILanguage(language))
