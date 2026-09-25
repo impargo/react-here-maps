@@ -1,3 +1,5 @@
+import H from '@here/maps-api-for-javascript'
+
 import getDomMarkerIcon, { DomIcons } from '../../src/utils/get-dom-marker-icon'
 
 describe('<HEREMap />', () => {

@@ -2,7 +2,6 @@ import Cluster, { ClusterProps, Datapoint, defaultClusteringOptions } from './Cl
 import HEREMap, { HEREMapProps, HEREMapRef, HEREMapState } from './HEREMap'
 import Marker from './Marker'
 import Polyline from './Polyline'
-export type { DefaultLayers } from './types'
 
 export {
   Cluster,
