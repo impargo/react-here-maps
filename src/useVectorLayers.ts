@@ -1,6 +1,5 @@
+import H from '@here/maps-api-for-javascript'
 import { useEffect } from 'react'
-
-import { DefaultLayers } from './types'
 
 export interface UseVectorLayersProps {
   map?: H.Map,
@@ -8,7 +7,7 @@ export interface UseVectorLayersProps {
   trafficLayer?: boolean,
   useSatellite?: boolean,
   congestion?: boolean,
-  defaultLayers?: DefaultLayers,
+  defaultLayers?: H.service.Platform.DefaultLayers,
   enableVectorLayers: boolean,
 }
 
@@ -63,7 +62,7 @@ export const useVectorLayers = ({
       }
 
       const changeListener = () => {
-        if (style.getState() === H.map.Style.State.READY) {
+        if (style.getState() === H.map.render.Style.State.READY) {
           style.removeEventListener('change', changeListener)
           setFeatures(style, truckRestrictions, congestion)
         }

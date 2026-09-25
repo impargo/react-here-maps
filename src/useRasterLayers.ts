@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
 
-import type { DefaultLayers } from './types'
 import { getPlatform } from './utils/get-platform'
 import { getTileLanguage } from './utils/languages'
 
@@ -11,7 +10,7 @@ export interface UseRasterLayersProps {
   trafficLayer?: boolean,
   useSatellite?: boolean,
   congestion?: boolean,
-  defaultLayers?: DefaultLayers,
+  defaultLayers?: H.service.Platform.DefaultLayers,
   apiKey: string,
   enableRasterLayers: boolean,
   language: string,
