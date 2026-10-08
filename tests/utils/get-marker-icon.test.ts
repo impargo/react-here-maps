@@ -1,3 +1,5 @@
+import H from '@here/maps-api-for-javascript'
+
 import getMarkerIcon, { Icons } from '../../src/utils/get-marker-icon'
 
 describe('<HEREMap />', () => {

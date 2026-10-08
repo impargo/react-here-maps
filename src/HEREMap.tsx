@@ -1,11 +1,10 @@
-import './bundle'
+import '@here/maps-api-for-javascript/mapsjs-ui.css'
 
+import H from '@here/maps-api-for-javascript'
 import { debounce, uniqueId } from 'lodash'
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
 import { HEREMapContext } from './context'
-import type { DefaultLayers } from './types'
-import { useLegacyRasterLayers } from './useLegacyRasterLayers'
 import { useRasterLayers } from './useRasterLayers'
 import { useVectorLayers } from './useVectorLayers'
 import { getPlatform } from './utils/get-platform'
@@ -20,14 +19,6 @@ export interface HEREMapProps extends H.Map.Options {
   interactive?: boolean,
   routes?: object[],
   truckRestrictions?: boolean,
-  /**
-   * Specify the engine type. Choose between the newer HARP engine, or the legacy P2D engine.
-   * The WEBGL engine is not supported by this library.
-   *
-   * Note that the P2D engine is no longer supported by HERE and may be shut down at any moment.
-   * It's only provided for legacy reasons for a transitional period.
-   */
-  engineType?: H.Map.EngineType,
   showActiveAndInactiveTruckRestrictions?: boolean,
   /**
    * @default false
@@ -97,16 +88,7 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
   animateZoom,
   animateCenter,
   useVectorTiles,
-  engineType = H.Map.EngineType.HARP,
 }, ref) => {
-  if (engineType === H.Map.EngineType.WEBGL) {
-    throw new Error('WEBGL Engine is not supported.')
-  }
-
-  if (engineType !== H.Map.EngineType.HARP && useVectorTiles) {
-    throw new Error('Vector tiles can only be used with the HARP engine.')
-  }
-
   const uniqueIdRef = useRef<string>(uniqueId())
 
   const [map, setMap] = useState<H.Map>(null)
@@ -114,7 +96,7 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
 
   const markersGroupsRef = useRef<Record<string, H.map.Group>>({})
 
-  const defaultLayersRef = useRef<DefaultLayers>(null)
+  const defaultLayersRef = useRef<H.service.Platform.DefaultLayers>(null)
 
   useVectorLayers({
     congestion,
@@ -136,22 +118,9 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
     truckRestrictions,
     showActiveAndInactiveTruckRestrictions,
     useSatellite,
-    enableRasterLayers: !useVectorTiles && engineType === H.Map.EngineType.HARP,
+    enableRasterLayers: !useVectorTiles,
     hidpi,
     hideTruckRestrictionsWhenZooming,
-  })
-
-  useLegacyRasterLayers({
-    apiKey,
-    congestion,
-    defaultLayers: defaultLayersRef.current,
-    language,
-    map,
-    trafficLayer,
-    truckRestrictions,
-    useSatellite,
-    enableRasterLayers: !useVectorTiles && engineType === H.Map.EngineType.P2D,
-    hidpi,
   })
 
   const unmountedRef = useRef(false)
@@ -236,15 +205,10 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
       apikey: apiKey,
     })
 
-    const ppi = engineType === H.Map.EngineType.P2D
-      ? hidpi ? 320 : 72
-      : undefined
-
     defaultLayersRef.current = platform.createDefaultLayers({
       lg: getTileLanguage(language),
-      engineType,
-      ppi,
-    }) as DefaultLayers
+      engineType: H.Map.EngineType.HARP,
+    })
 
     const hereMapEl = document.querySelector(`#map-container-${uniqueIdRef.current}`) as HTMLElement
     const baseLayer = useVectorTiles
@@ -255,7 +219,6 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
       baseLayer,
       {
         center,
-        engineType,
         zoom,
       },
     )

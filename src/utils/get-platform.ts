@@ -1,4 +1,4 @@
-import '../bundle'
+import H from '@here/maps-api-for-javascript'
 
 let platform: H.service.Platform
 

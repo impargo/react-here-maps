@@ -1,3 +1,4 @@
+import H from '@here/maps-api-for-javascript'
 import { render, waitFor } from '@testing-library/react'
 import React, { useContext } from 'react'
 
