@@ -12,7 +12,7 @@ if (!process.env.HERE_APIKEY) {
 }
 
 const MapAndControls = () => {
-  const [useVectorTiles, setUseVectorTiles] = useState(false)
+  const [useVectorTiles, setUseVectorTiles] = useState(true)
   const [enableSatellite, setEnableSatellite] = useState(false)
   const [enableTruckLayer, setEnableTruckLayer] = useState(true)
   const [enableActiveAndInactiveTruckRestrictions, setEnableActiveAndInactiveTruckRestrictions] = useState(false)
