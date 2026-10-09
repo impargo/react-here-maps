@@ -21,6 +21,20 @@ export interface HEREMapProps extends H.Map.Options {
   truckRestrictions?: boolean,
   showActiveAndInactiveTruckRestrictions?: boolean,
   /**
+   * Start of the time range used to decide which time-dependent truck restrictions are active.
+   * Only applies to vector tiles.
+   *
+   * @default Date.now()
+   */
+  truckRestrictionsStartTime?: Date,
+  /**
+   * End of the time range used to decide which time-dependent truck restrictions are active.
+   * Only applies to vector tiles.
+   *
+   * @default truckRestrictionsStartTime
+   */
+  truckRestrictionsEndTime?: Date,
+  /**
    * @default false
    */
   hideTruckRestrictionsWhenZooming?: boolean,
@@ -83,6 +97,8 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
   congestion,
   truckRestrictions,
   showActiveAndInactiveTruckRestrictions,
+  truckRestrictionsStartTime,
+  truckRestrictionsEndTime,
   hideTruckRestrictionsWhenZooming,
   apiKey,
   animateZoom,
@@ -104,6 +120,9 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
     map,
     trafficLayer,
     truckRestrictions,
+    showActiveAndInactiveTruckRestrictions,
+    truckRestrictionsStartTime,
+    truckRestrictionsEndTime,
     useSatellite,
     enableVectorLayers: useVectorTiles,
   })
