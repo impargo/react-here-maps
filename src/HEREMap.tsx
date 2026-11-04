@@ -159,21 +159,39 @@ export const HEREMap = forwardRef<HEREMapRef, HEREMapProps>(({
 
   const addToMarkerGroup = (marker: H.map.Marker, group: string) => {
     if (!markersGroupsRef.current[group]) {
+      // eslint-disable-next-line no-console
+      console.warn('[marker-group] CREATING group', group, 'instance:', Date.now()) // TEMP DEBUG
       markersGroupsRef.current[group] = new H.map.Group()
       map.addObject(markersGroupsRef.current[group])
     }
     markersGroupsRef.current[group].addObject(marker)
+    // eslint-disable-next-line no-console
+    console.log('[marker-group] ADDED marker to group', group, 'marker:', marker, 'markerData:', marker.getData?.(), 'groupSize:', markersGroupsRef.current[group].getObjects().length, 'time:', Date.now()) // TEMP DEBUG
   }
 
   const removeFromMarkerGroup = (marker: H.map.Marker, group: string) => {
     if (markersGroupsRef.current[group]) {
-      markersGroupsRef.current[group].removeObject(marker)
-      if (markersGroupsRef.current[group].getObjects().length === 0) {
+      const currentGroup = markersGroupsRef.current[group]
+      const wasMember = currentGroup.getObjects().includes(marker) // TEMP DEBUG
+      if (!wasMember) {
+        // eslint-disable-next-line no-console
+        console.error('[marker-group] GHOST: marker not in current group! This marker will leak on the map.', { marker, group, markerData: marker.getData?.(), groupObjectCount: currentGroup.getObjects().length, time: Date.now() }) // TEMP DEBUG
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('[marker-group] REMOVED marker from group', group, 'marker:', marker, 'markerData:', marker.getData?.(), 'groupSizeBefore:', currentGroup.getObjects().length, 'time:', Date.now()) // TEMP DEBUG
+      }
+      currentGroup.removeObject(marker)
+      if (currentGroup.getObjects().length === 0) {
         if (map.getObjects().length > 0) {
-          map.removeObject(markersGroupsRef.current[group])
+          map.removeObject(currentGroup)
         }
+        // eslint-disable-next-line no-console
+        console.warn('[marker-group] TEARING DOWN group', group, 'instance:', Date.now()) // TEMP DEBUG
         markersGroupsRef.current[group] = null
       }
+    } else {
+      // eslint-disable-next-line no-console
+      console.error('[marker-group] GHOST: group does not exist at all when trying to remove marker!', { marker, group, markerData: marker.getData?.(), time: Date.now() }) // TEMP DEBUG
     }
   }
 
